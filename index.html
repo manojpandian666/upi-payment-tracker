@@ -70,10 +70,12 @@
         return;
       }
 
+      //paytm://upi/pay?scheme=upi&payee=98XXXXXX90@paytm&amount=100&description=Payment+for+goods
       const upiUri = `upi://pay?pa=${upiId}&pn=Friend&am=${amount}&cu=INR`;
       const encodedUri = encodeURIComponent(upiUri);
       const paytmUri = `paytmmp://pay?url=${encodedUri}`;
-      window.location.href = paytmUri;
+      const paytmNewUri = `paytm://upi/pay?scheme=upi&payee=${upiId}&amount=${amount}&description=Group_Expense`
+      window.location.href = paytmNewUri;
 
       const logEntry = `Paid ₹${amount} to ${upiId} on ${new Date().toLocaleString()}\n`;
       let currentLog = localStorage.getItem("payments") || "";
