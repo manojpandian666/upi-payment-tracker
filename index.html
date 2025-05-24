@@ -74,7 +74,7 @@
       const upiUri = `upi://pay?pa=${upiId}&pn=Friend&am=${amount}&cu=INR`;
       const encodedUri = encodeURIComponent(upiUri);
       const paytmUri = `paytmmp://pay?url=${encodedUri}`;
-      const paytmNewUri = `paytm://upi/pay?scheme=upi&payee=${upiId}&amount=${amount}&description=Group_Expense`
+      const paytmNewUri = `paytm://upi/pay?pa=${upiId}&pn=GroupExpense&am=${amount}&cu=INR`;
       window.location.href = paytmNewUri;
 
       const logEntry = `Paid ₹${amount} to ${upiId} on ${new Date().toLocaleString()}\n`;
