@@ -20,7 +20,7 @@
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    input, button, select {
+    input, button {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
@@ -56,13 +56,7 @@
     <button onclick="startScan()">Scan QR Code</button>
     <div id="reader" style="display:none;"></div>
     <input type="number" id="amount" placeholder="Enter amount (INR)" />
-    <select id="appSelector">
-      <option value="">Default UPI App</option>
-      <option value="net.one97.paytm">Paytm</option>
-      <option value="com.google.android.apps.nbu.paisa.user">GPay</option>
-      <option value="com.phonepe.app">PhonePe</option>
-    </select>
-    <button onclick="makePayment()">Pay Now</button>
+    <button onclick="makePayment()">Pay with Paytm</button>
     <div class="log" id="log"></div>
   </div>
 
@@ -70,32 +64,20 @@
     function makePayment() {
       const upiId = document.getElementById('upiId').value.trim();
       const amount = document.getElementById('amount').value.trim();
-      const selectedPackage = document.getElementById('appSelector').value;
 
       if (!upiId || !amount) {
         alert("Please enter both UPI ID and amount.");
         return;
       }
 
-      const upiUri = `upi://pay?pa=${upiId}&pn=GroupExpense&am=${amount}&cu=INR`;
+      //paytm://upi/pay?scheme=upi&payee=98XXXXXX90@paytm&amount=100&description=Payment+for+goods
+      const upiUri = `upi://pay?pa=${upiId}&pn=Friend&am=${amount}&cu=INR`;
+      const encodedUri = encodeURIComponent(upiUri);
+      const paytmUri = `paytmmp://pay?url=${encodedUri}`;
+      const paytmNewUri = `paytm://upi/pay?pa=${upiId}&pn=GroupExpense&am=${amount}&cu=INR`;
+      window.location.href = paytmNewUri;
 
-      if (navigator.userAgent.match(/Android/i)) {
-        if (selectedPackage) {
-          const intentUri = `intent://pay?pa=${upiId}&pn=GroupExpense&am=${amount}&cu=INR#Intent;scheme=upi;package=${selectedPackage};end`;
-          window.location.href = intentUri;
-        } else {
-          window.location.href = upiUri;
-        }
-      } else if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
-        // iOS does not support UPI intents, just try generic UPI link
-        window.location.href = upiUri;
-        alert("On iOS, system will try to open a supported UPI app. If nothing happens, open your UPI app manually.");
-      } else {
-        alert("UPI payments are only supported on mobile devices.");
-      }
-
-      const logEntry = `Paid ₹${amount} to ${upiId} on ${new Date().toLocaleString()}
-`;
+      const logEntry = `Paid ₹${amount} to ${upiId} on ${new Date().toLocaleString()}\n`;
       let currentLog = localStorage.getItem("payments") || "";
       currentLog += logEntry;
       localStorage.setItem("payments", currentLog);
