@@ -97,17 +97,19 @@
           qrbox: 250
         },
         (decodedText) => {
-          if (decodedText.startsWith("upi://pay?")) {
+          if (decodedText.includes("upi://pay")) {
             const params = new URLSearchParams(decodedText.split('?')[1]);
             const pa = params.get("pa");
             if (pa) {
               document.getElementById("upiId").value = pa;
-              alert("UPI ID scanned: " + pa);
+              alert("Scanned UPI ID: " + pa);
               html5QrCode.stop();
               reader.style.display = "none";
+            } else {
+              alert("UPI ID not found in QR code.");
             }
           } else {
-            alert("Invalid UPI QR Code.");
+            alert("Scanned QR is not a valid UPI payment link.");
           }
         },
         (errorMessage) => {
