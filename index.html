@@ -56,7 +56,7 @@
     <button onclick="startScan()">Scan QR Code</button>
     <div id="reader" style="display:none;"></div>
     <input type="number" id="amount" placeholder="Enter amount (INR)" />
-    <button onclick="makePayment()">Pay with GPay</button>
+    <button onclick="makePayment()">Pay with Paytm</button>
     <div class="log" id="log"></div>
   </div>
 
@@ -71,8 +71,9 @@
       }
 
       const upiUri = `upi://pay?pa=${upiId}&pn=Friend&am=${amount}&cu=INR`;
-      const encodedUri = encodeURI(upiUri);
-      window.location.href = encodedUri;
+      const encodedUri = encodeURIComponent(upiUri);
+      const paytmUri = `paytmmp://pay?url=${encodedUri}`;
+      window.location.href = paytmUri;
 
       const logEntry = `Paid ₹${amount} to ${upiId} on ${new Date().toLocaleString()}\n`;
       let currentLog = localStorage.getItem("payments") || "";
